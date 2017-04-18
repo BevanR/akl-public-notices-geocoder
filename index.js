@@ -1,3 +1,6 @@
+const cheerio = require('cheerio')
+const request = require('request')
+
 url = 'http://www.imdb.com/title/tt1229340/';
 
 request(url, function(error, response, html){
@@ -9,7 +12,7 @@ request(url, function(error, response, html){
 
         // We'll use the unique header class as a starting point.
 
-        $('.header').filter(function(){
+        $('.title_wrapper').filter(function(){
 
             // Let's store the data we filter into a variable so we can easily see what's going on.
 
@@ -24,5 +27,7 @@ request(url, function(error, response, html){
 
             json.title = title;
         })
+        console.log(json)
+        process.exit()
     }
 })
