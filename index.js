@@ -19,14 +19,18 @@ function getNotice({url, text}) {
         request(url, (error, response, html) => {
             if (error) throw error
             const $ = cheerio.load(html)
-            const content = $('#content_middle')
+            const element = $('#content_middle')
+            const content = element.find('.pagecontent > div')
             const notice = {
-                title: content.find('h2').text().trim(),
-                date: content.find('.date').text().trim(),
-                content: content.find('.pagecontent > div').html(),
+                title: element.find('h2').text().trim(),
+                date: element.find('.date').text().trim(),
+                content: {
+                    text: content.text(),
+                    html: content.html(),
+                },
                 unknown: {
-                    full: content.find('.full').text().trim(),
-                    byline: content.find('.byline').text().trim(),
+                    full: element.find('.full').text().trim(),
+                    byline: element.find('.byline').text().trim(),
                 }
             }
 
