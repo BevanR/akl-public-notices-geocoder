@@ -13,10 +13,15 @@ function main() {
     const results = {}
     getNotices()
         .then(notices => {
-            results.allNotices = notices
+            // Debug the notices.
+            // console.log(JSON.stringify(notices, null, 2))
+            // process.exit()
 
             // Debug the first "Other" notice.
-            return getNotice(notices.Other[0]).then(notice => [notice])
+            return getNotice(notices.Other[0]).then(notice => {
+                results.firstNoticeFromCategoryOther = notice
+                return [notice]
+            })
 
             return Promise.all(notices.Other.map(getNotice))
         })
@@ -30,7 +35,11 @@ function main() {
             }))
             return Promise.all(promises)
         })
-        .then(values => console.log(values))
+        .then(locations => {
+            results.places = locations
+            console.log(JSON.stringify(results, null, 2))
+            process.exit()
+        })
 }
 
 function filterGeocodeResults(results) {
