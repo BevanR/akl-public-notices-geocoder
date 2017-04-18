@@ -1,23 +1,55 @@
 const cheerio = require('cheerio')
 const request = require('request')
 
-url = 'http://www.aucklandcouncil.govt.nz/EN/newseventsculture/OurAuckland/PublicNotices/Pages/Home.aspx';
+const baseUrl = 'http://www.aucklandcouncil.govt.nz'
 
-request(url, function(error, response, html){
-    if (error) throw error
-
-    const $ = cheerio.load(html)
-    const results = []
-    const selectors = [
-        'a[href]',
-        // '*:has(> a:not([href]))',
-    ]
-
-    $('#ZoneA').find(selectors.join(',')).filter(() => {
-        const element = $(this)
-        const text = element.text().trim()
-        if (text) console.log(text)
+function main() {
+    getNotices().then((notices) => {
+        console.log(notices.Other[0].url)
+        process.exit()
     })
-    // console.log(results)
-    process.exit()
-})
+}
+
+function getNotices() {
+    return new Promise(resolve => {
+        const url = `${baseUrl}/EN/newseventsculture/OurAuckland/PublicNotices/Pages/Home.aspx`
+
+
+        request(url, (error, response, html) => {
+            if (error) throw error
+
+            const $ = cheerio.load(html)
+            elements = []
+            $('#ZoneA').find('a').filter(function() {
+                elements.push($(this))
+            })
+
+            const all = []
+            let results
+
+            elements.map((element) => {
+                const url = element.attr('href')
+                if (url) {
+                    const text = element.text()
+                    results.notices.push({url, text})
+                } else {
+                    if (results) {
+                        all.push(results)
+                    }
+
+                    results = {
+                        notices: [],
+                        description: element.parent().text().trim()
+                    }
+                }
+            })
+            all.push(results)
+            const map = {}
+            all.forEach(({description, notices}) => map[description] = notices)
+
+            resolve(map)
+        })
+    })
+}
+
+main()
