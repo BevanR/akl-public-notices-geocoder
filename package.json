@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/language": "^0.10.3",
     "cheerio": "^0.22.0",
+    "geocoder": "^0.2.3",
     "request": "^2.81.0"
   }
 }
