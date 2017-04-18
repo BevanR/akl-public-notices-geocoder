@@ -1,23 +1,12 @@
-const cheerio = require('cheerio')
-const request = require('request')
+const scraperjs = require('scraperjs')
 
-url = 'http://www.aucklandcouncil.govt.nz/EN/newseventsculture/OurAuckland/PublicNotices/Pages/Home.aspx';
-
-request(url, function(error, response, html){
-    if (error) throw error
-
-    const $ = cheerio.load(html)
-    const results = []
-    const selectors = [
-        'a[href]',
-        // '*:has(> a:not([href]))',
-    ]
-
-    $('#ZoneA').find(selectors.join(',')).filter(() => {
-        const element = $(this)
-        const text = element.text().trim()
-        if (text) console.log(text)
+const url = 'http://www.aucklandcouncil.govt.nz/EN/newseventsculture/OurAuckland/PublicNotices/Pages/Home.aspx';
+scraperjs.StaticScraper.create(url)
+    .scrape(function($) {
+        return $('#ZoneA a').map(function() {
+            return $(this).text();
+        }).get();
     })
-    // console.log(results)
-    process.exit()
-})
+    .then(function(news) {
+        console.log(news);
+    })
